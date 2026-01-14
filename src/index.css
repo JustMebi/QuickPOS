@@ -1,0 +1,302 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+@layer base {
+  :root {
+    /* Core palette - Professional slate/navy */
+    --background: 220 20% 97%;
+    --foreground: 222 47% 11%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+
+    /* Primary - Deep professional navy */
+    --primary: 222 47% 20%;
+    --primary-foreground: 210 40% 98%;
+
+    /* Secondary - Soft slate */
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 222 47% 11%;
+
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 9% 46%;
+
+    /* Accent - Vibrant teal for actions */
+    --accent: 173 80% 40%;
+    --accent-foreground: 0 0% 100%;
+
+    /* Success - Green for payments/confirmations */
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+
+    /* Warning - Amber for alerts */
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 222 47% 20%;
+
+    --radius: 0.75rem;
+
+    /* POS specific tokens */
+    --pos-sidebar: 222 47% 11%;
+    --pos-sidebar-foreground: 210 40% 98%;
+    --pos-product-card: 0 0% 100%;
+    --pos-cart: 220 20% 98%;
+    --pos-category-active: 173 80% 40%;
+    --pos-category-inactive: 220 14% 96%;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(222 47% 20%) 0%, hsl(222 47% 30%) 100%);
+    --gradient-success: linear-gradient(135deg, hsl(142 76% 36%) 0%, hsl(142 76% 46%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(173 80% 40%) 0%, hsl(173 80% 50%) 100%);
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 222 47% 8%;
+    --foreground: 210 40% 98%;
+
+    --card: 222 47% 11%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222 47% 11%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 173 80% 40%;
+    --primary-foreground: 222 47% 11%;
+
+    --secondary: 222 47% 15%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 222 47% 15%;
+    --muted-foreground: 220 14% 60%;
+
+    --accent: 173 80% 40%;
+    --accent-foreground: 0 0% 100%;
+
+    --success: 142 76% 42%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 222 47% 18%;
+    --input: 222 47% 18%;
+    --ring: 173 80% 40%;
+
+    --pos-sidebar: 222 47% 6%;
+    --pos-sidebar-foreground: 210 40% 98%;
+    --pos-product-card: 222 47% 13%;
+    --pos-cart: 222 47% 10%;
+    --pos-category-active: 173 80% 40%;
+    --pos-category-inactive: 222 47% 15%;
+
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-border rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-muted-foreground/30;
+  }
+}
+
+@layer components {
+  /* POS Button variants */
+  .pos-btn-primary {
+    @apply bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-200;
+    box-shadow: var(--shadow-md);
+  }
+
+  .pos-btn-success {
+    @apply text-success-foreground transition-all duration-200 hover:opacity-90;
+    background: var(--gradient-success);
+    box-shadow: var(--shadow-md);
+  }
+
+  .pos-btn-accent {
+    @apply text-accent-foreground transition-all duration-200 hover:opacity-90;
+    background: var(--gradient-accent);
+    box-shadow: var(--shadow-md);
+  }
+
+  /* Product card styling */
+  .product-card {
+    @apply bg-card rounded-xl p-3 cursor-pointer transition-all duration-200 border border-transparent;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .product-card:hover {
+    @apply border-accent/30;
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
+
+  .product-card:active {
+    transform: scale(0.98);
+  }
+
+  /* Category pill */
+  .category-pill {
+    @apply px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 cursor-pointer;
+  }
+
+  .category-pill-active {
+    @apply bg-accent text-accent-foreground;
+    box-shadow: var(--shadow-md);
+  }
+
+  .category-pill-inactive {
+    @apply bg-secondary text-secondary-foreground hover:bg-secondary/80;
+  }
+
+  /* Cart item */
+  .cart-item {
+    @apply flex items-center justify-between p-3 rounded-lg bg-card transition-all duration-200;
+  }
+
+  .cart-item:hover {
+    @apply bg-secondary;
+  }
+
+  /* Dashboard card */
+  .dashboard-card {
+    @apply bg-card rounded-xl p-6 border border-border;
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* Stat card with gradient accent */
+  .stat-card {
+    @apply relative overflow-hidden bg-card rounded-xl p-6 border border-border;
+    box-shadow: var(--shadow-md);
+  }
+
+  .stat-card::before {
+    content: '';
+    @apply absolute top-0 left-0 w-1 h-full bg-accent;
+  }
+
+  /* Keypad button */
+  .keypad-btn {
+    @apply flex items-center justify-center text-xl font-semibold rounded-lg bg-secondary text-secondary-foreground transition-all duration-150;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .keypad-btn:hover {
+    @apply bg-secondary/80;
+  }
+
+  .keypad-btn:active {
+    transform: scale(0.95);
+  }
+}
+
+@layer utilities {
+  /* Animation utilities */
+  .animate-slide-up {
+    animation: slideUp 0.3s ease-out;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.2s ease-out;
+  }
+
+  .animate-scale-in {
+    animation: scaleIn 0.2s ease-out;
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes scaleIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  /* Touch-friendly sizing */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
