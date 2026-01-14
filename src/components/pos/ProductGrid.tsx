@@ -1,10 +1,20 @@
 import React, { useState } from 'react';
-import { Product, Category } from '@/types/pos';
+import { Product } from '@/types/pos';
 import { usePOS } from '@/contexts/POSContext';
 import { Search, Package } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { categories, products } from '@/data/mockData';
 import { cn } from '@/lib/utils';
+import { images } from '@/assets/images';
+
+const getCategoryImage = (product: Product) =>
+  product.isService
+    ? images.services
+    : product.category === 'beverages'
+      ? images.beverages
+      : product.category === 'food'
+        ? images.food
+        : images.snacks;
 
 export const ProductGrid: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -85,7 +95,8 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
   const isLowStock = !product.isService && product.stock <= 10;
-  
+  const fallbackImage = getCategoryImage(product);
+
   return (
     <button
       onClick={onClick}
@@ -100,9 +111,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
             className="w-full h-full object-cover"
           />
         ) : (
-          <div className="text-3xl">
-            {product.isService ? '✂️' : product.category === 'beverages' ? '☕' : product.category === 'food' ? '🍽️' : '🍪'}
-          </div>
+          <img
+            src={fallbackImage}
+            alt={product.isService ? 'Service' : product.category}
+            className="w-full h-full object-contain"
+          />
         )}
       </div>
       <h3 className="font-medium text-sm text-foreground truncate">{product.name}</h3>

@@ -1,5 +1,17 @@
 import React from 'react';
 import { salesStats } from '@/data/mockData';
+import { images } from '@/assets/images';
+
+const getCategoryImage = (
+  product: (typeof salesStats.topProducts)[number]['product']
+) =>
+  product.isService
+    ? images.services
+    : product.category === 'beverages'
+      ? images.beverages
+      : product.category === 'food'
+        ? images.food
+        : images.snacks;
 
 export const TopProducts: React.FC = () => {
   const maxSold = Math.max(...salesStats.topProducts.map((p) => p.sold));
@@ -13,8 +25,12 @@ export const TopProducts: React.FC = () => {
             <span className="text-sm font-medium text-muted-foreground w-5">
               {index + 1}
             </span>
-            <div className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center text-lg">
-              {product.isService ? '✂️' : product.category === 'beverages' ? '☕' : product.category === 'food' ? '🍽️' : '🍪'}
+            <div className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center">
+              <img
+                src={getCategoryImage(product)}
+                alt={product.isService ? 'Service' : product.category}
+                className="w-6 h-6 object-contain"
+              />
             </div>
             <div className="flex-1 min-w-0">
               <p className="font-medium text-foreground text-sm truncate">

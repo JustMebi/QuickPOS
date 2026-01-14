@@ -21,6 +21,16 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
+import { images } from '@/assets/images';
+
+const getCategoryImage = (product: Product) =>
+  product.isService
+    ? images.services
+    : product.category === 'beverages'
+      ? images.beverages
+      : product.category === 'food'
+        ? images.food
+        : images.snacks;
 
 const ProductsPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -109,8 +119,12 @@ const ProductsPage: React.FC = () => {
                   <TableRow key={product.id}>
                     <TableCell>
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center text-lg">
-                          {product.isService ? '✂️' : product.category === 'beverages' ? '☕' : product.category === 'food' ? '🍽️' : '🍪'}
+                        <div className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center">
+                          <img
+                            src={getCategoryImage(product)}
+                            alt={product.isService ? 'Service' : product.category}
+                            className="w-6 h-6 object-contain"
+                          />
                         </div>
                         <span className="font-medium">{product.name}</span>
                       </div>
@@ -123,11 +137,11 @@ const ProductsPage: React.FC = () => {
                       ${product.price.toFixed(2)}
                     </TableCell>
                     <TableCell className="text-right text-muted-foreground">
-                      {product.cost ? `$${product.cost.toFixed(2)}` : '—'}
+                      {product.cost ? `$${product.cost.toFixed(2)}` : '??"'}
                     </TableCell>
                     <TableCell className="text-right">
                       {product.isService ? (
-                        <span className="text-muted-foreground">∞</span>
+                        <span className="text-muted-foreground">?^z</span>
                       ) : (
                         <span className={cn(product.stock <= 10 && 'text-warning font-medium')}>
                           {product.stock}
