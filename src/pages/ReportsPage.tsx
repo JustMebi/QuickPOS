@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
+import { useToast } from '@/hooks/use-toast';
 
 const salesData = [
   { name: 'Mon', revenue: 42000, profit: 12600 },
@@ -49,6 +50,7 @@ const cashierPerformance = [
 
 const ReportsPage: React.FC = () => {
   const [dateRange, setDateRange] = useState('week');
+  const { toast } = useToast();
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-NG', {
@@ -59,8 +61,10 @@ const ReportsPage: React.FC = () => {
   };
 
   const handleExport = (format: 'csv' | 'pdf') => {
-    // Placeholder for export functionality
-    console.log(`Exporting as ${format}`);
+    toast({
+      title: 'Export queued',
+      description: `Preparing your ${format.toUpperCase()} report.`,
+    });
   };
 
   return (

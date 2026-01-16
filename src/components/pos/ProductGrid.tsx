@@ -19,7 +19,7 @@ const getCategoryImage = (product: Product) =>
 export const ProductGrid: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
-  const { addToCart } = usePOS();
+  const { addToCart, formatCurrency } = usePOS();
 
   const filteredProducts = products.filter((product) => {
     const matchesCategory =
@@ -73,6 +73,7 @@ export const ProductGrid: React.FC = () => {
             <ProductCard
               key={product.id}
               product={product}
+              formatCurrency={formatCurrency}
               onClick={() => addToCart(product)}
             />
           ))}
@@ -90,10 +91,15 @@ export const ProductGrid: React.FC = () => {
 
 interface ProductCardProps {
   product: Product;
+  formatCurrency: (amount: number) => string;
   onClick: () => void;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
+const ProductCard: React.FC<ProductCardProps> = ({
+  product,
+  formatCurrency,
+  onClick,
+}) => {
   const isLowStock = !product.isService && product.stock <= 10;
   const fallbackImage = getCategoryImage(product);
 
@@ -121,7 +127,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
       <h3 className="font-medium text-sm text-foreground truncate">{product.name}</h3>
       <div className="flex items-center justify-between mt-1">
         <span className="text-base font-bold text-foreground">
-          ${product.price.toFixed(2)}
+          {formatCurrency(product.price)}
         </span>
         {isLowStock && (
           <span className="text-xs px-1.5 py-0.5 rounded bg-warning/10 text-warning font-medium">

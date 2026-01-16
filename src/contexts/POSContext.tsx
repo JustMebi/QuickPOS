@@ -1,11 +1,20 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import { CartItem, Product, Customer, PaymentMethod, User } from '@/types/pos';
 import { currentUser } from '@/data/mockData';
+
+interface POSSettings {
+  currency: 'ngn' | 'usd' | 'eur' | 'gbp';
+  taxRate: number;
+  isDarkMode: boolean;
+}
 
 interface POSContextType {
   cart: CartItem[];
   customer: Customer | null;
   user: User;
+  settings: POSSettings;
+  setSettings: (updates: Partial<POSSettings>) => void;
+  formatCurrency: (amount: number) => string;
   addToCart: (product: Product) => void;
   removeFromCart: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
@@ -24,6 +33,17 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [cart, setCart] = useState<CartItem[]>([]);
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [user] = useState<User>(currentUser);
+  const [settings, setSettingsState] = useState<POSSettings>(() => {
+    const stored = localStorage.getItem('pos-settings');
+    if (stored) {
+      try {
+        return JSON.parse(stored) as POSSettings;
+      } catch {
+        return { currency: 'ngn', taxRate: 7.5, isDarkMode: false };
+      }
+    }
+    return { currency: 'ngn', taxRate: 7.5, isDarkMode: false };
+  });
 
   const addToCart = useCallback((product: Product) => {
     setCart((prev) => {
@@ -73,6 +93,37 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setCustomer(null);
   }, []);
 
+  const setSettings = useCallback((updates: Partial<POSSettings>) => {
+    setSettingsState((prev) => ({ ...prev, ...updates }));
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('pos-settings', JSON.stringify(settings));
+  }, [settings]);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', settings.isDarkMode);
+  }, [settings.isDarkMode]);
+
+  const formatCurrency = useCallback(
+    (amount: number) => {
+      const config =
+        {
+          ngn: { locale: 'en-NG', currency: 'NGN' },
+          usd: { locale: 'en-US', currency: 'USD' },
+          eur: { locale: 'en-IE', currency: 'EUR' },
+          gbp: { locale: 'en-GB', currency: 'GBP' },
+        }[settings.currency] ?? { locale: 'en-NG', currency: 'NGN' };
+
+      return new Intl.NumberFormat(config.locale, {
+        style: 'currency',
+        currency: config.currency,
+        minimumFractionDigits: 2,
+      }).format(amount);
+    },
+    [settings.currency]
+  );
+
   const getSubtotal = useCallback(() => {
     return cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
   }, [cart]);
@@ -90,8 +141,8 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const getTax = useCallback(() => {
     const taxableAmount = getSubtotal() - getDiscount();
-    return taxableAmount * 0.08; // 8% tax
-  }, [getSubtotal, getDiscount]);
+    return taxableAmount * (settings.taxRate / 100);
+  }, [getSubtotal, getDiscount, settings.taxRate]);
 
   const getTotal = useCallback(() => {
     return getSubtotal() - getDiscount() + getTax();
@@ -103,6 +154,9 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         cart,
         customer,
         user,
+        settings,
+        setSettings,
+        formatCurrency,
         addToCart,
         removeFromCart,
         updateQuantity,

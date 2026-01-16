@@ -41,7 +41,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
   onClose,
   total,
 }) => {
-  const { clearCart } = usePOS();
+  const { clearCart, formatCurrency } = usePOS();
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod>('cash');
   const [amountTendered, setAmountTendered] = useState<string>('');
   const [isProcessing, setIsProcessing] = useState(false);
@@ -95,7 +95,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
             <DialogHeader className="p-6 pb-4">
               <DialogTitle className="text-2xl font-bold">Payment</DialogTitle>
               <div className="text-4xl font-bold text-accent mt-2">
-                ${total.toFixed(2)}
+                {formatCurrency(total)}
               </div>
             </DialogHeader>
 
@@ -139,14 +139,14 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
                       onClick={() => setAmountTendered(amount.toString())}
                       className="flex-1 py-2 px-3 rounded-lg bg-secondary text-secondary-foreground text-sm font-medium hover:bg-secondary/80 transition-colors"
                     >
-                      ${amount}
+                      {formatCurrency(amount)}
                     </button>
                   ))}
                 </div>
                 {tenderedValue >= total && (
                   <div className="flex justify-between items-center p-3 rounded-lg bg-success/10 text-success">
                     <span className="font-medium">Change</span>
-                    <span className="text-xl font-bold">${change.toFixed(2)}</span>
+                    <span className="text-xl font-bold">{formatCurrency(change)}</span>
                   </div>
                 )}
               </div>
@@ -182,7 +182,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
             {selectedMethod === 'cash' && change > 0 && (
               <div className="p-4 rounded-xl bg-accent/10 mb-6">
                 <p className="text-sm text-muted-foreground">Change Due</p>
-                <p className="text-3xl font-bold text-accent">${change.toFixed(2)}</p>
+                <p className="text-3xl font-bold text-accent">{formatCurrency(change)}</p>
               </div>
             )}
 

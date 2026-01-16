@@ -15,6 +15,8 @@ export const Cart: React.FC = () => {
     getTax,
     getDiscount,
     getTotal,
+    formatCurrency,
+    settings,
     clearCart,
   } = usePOS();
 
@@ -54,7 +56,7 @@ export const Cart: React.FC = () => {
           <div className="flex items-center gap-2">
             <User className="h-4 w-4 text-accent" />
             <span className="text-sm font-medium text-foreground">{customer.name}</span>
-            <span className="text-xs text-muted-foreground">• {customer.visitCount} visits</span>
+            <span className="text-xs text-muted-foreground">- {customer.visitCount} visits</span>
           </div>
         </div>
       )}
@@ -74,6 +76,7 @@ export const Cart: React.FC = () => {
               item={item}
               onUpdateQuantity={(qty) => updateQuantity(item.product.id, qty)}
               onRemove={() => removeFromCart(item.product.id)}
+              formatCurrency={formatCurrency}
             />
           ))
         )}
@@ -83,21 +86,23 @@ export const Cart: React.FC = () => {
       <div className="border-t border-border p-4 space-y-2 bg-card">
         <div className="flex justify-between text-sm">
           <span className="text-muted-foreground">Subtotal</span>
-          <span className="text-foreground">${subtotal.toFixed(2)}</span>
+          <span className="text-foreground">{formatCurrency(subtotal)}</span>
         </div>
         {discount > 0 && (
           <div className="flex justify-between text-sm">
             <span className="text-success">Discount</span>
-            <span className="text-success">-${discount.toFixed(2)}</span>
+            <span className="text-success">{formatCurrency(-discount)}</span>
           </div>
         )}
         <div className="flex justify-between text-sm">
-          <span className="text-muted-foreground">Tax (8%)</span>
-          <span className="text-foreground">${tax.toFixed(2)}</span>
+          <span className="text-muted-foreground">
+            Tax ({settings.taxRate}%)
+          </span>
+          <span className="text-foreground">{formatCurrency(tax)}</span>
         </div>
         <div className="flex justify-between text-lg font-bold pt-2 border-t border-border">
           <span>Total</span>
-          <span className="text-accent">${total.toFixed(2)}</span>
+          <span className="text-accent">{formatCurrency(total)}</span>
         </div>
 
         <Button
@@ -105,7 +110,7 @@ export const Cart: React.FC = () => {
           disabled={cart.length === 0}
           className="w-full h-14 text-lg font-semibold pos-btn-success rounded-xl mt-2"
         >
-          Charge ${total.toFixed(2)}
+          Charge {formatCurrency(total)}
         </Button>
       </div>
 
@@ -126,12 +131,14 @@ interface CartItemRowProps {
   };
   onUpdateQuantity: (quantity: number) => void;
   onRemove: () => void;
+  formatCurrency: (amount: number) => string;
 }
 
 const CartItemRow: React.FC<CartItemRowProps> = ({
   item,
   onUpdateQuantity,
   onRemove,
+  formatCurrency,
 }) => {
   const itemTotal = item.product.price * item.quantity;
   const discountAmount = item.discount
@@ -146,7 +153,7 @@ const CartItemRow: React.FC<CartItemRowProps> = ({
         <h4 className="font-medium text-foreground truncate">{item.product.name}</h4>
         <div className="flex items-center gap-2 text-sm">
           <span className="text-muted-foreground">
-            ${item.product.price.toFixed(2)} × {item.quantity}
+            {formatCurrency(item.product.price)} x {item.quantity}
           </span>
           {item.discount && (
             <span className="text-success flex items-center gap-0.5">
@@ -160,7 +167,7 @@ const CartItemRow: React.FC<CartItemRowProps> = ({
 
       <div className="flex items-center gap-2">
         <span className={cn('font-semibold min-w-[60px] text-right', discountAmount > 0 && 'text-success')}>
-          ${(itemTotal - discountAmount).toFixed(2)}
+          {formatCurrency(itemTotal - discountAmount)}
         </span>
 
         <div className="flex items-center gap-1 bg-secondary rounded-lg p-1">

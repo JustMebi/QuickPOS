@@ -8,6 +8,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
+import { usePOS } from '@/contexts/POSContext';
 
 const data = [
   { name: 'Mon', sales: 1200 },
@@ -20,6 +21,8 @@ const data = [
 ];
 
 export const SalesChart: React.FC = () => {
+  const { formatCurrency } = usePOS();
+
   return (
     <div className="dashboard-card">
       <div className="flex items-center justify-between mb-6">
@@ -53,7 +56,7 @@ export const SalesChart: React.FC = () => {
               axisLine={false}
               tickLine={false}
               tick={{ fill: 'hsl(220 9% 46%)', fontSize: 12 }}
-              tickFormatter={(value) => `$${value}`}
+              tickFormatter={(value) => formatCurrency(value)}
             />
             <Tooltip
               contentStyle={{
@@ -62,7 +65,7 @@ export const SalesChart: React.FC = () => {
                 borderRadius: '8px',
                 boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
               }}
-              formatter={(value: number) => [`$${value}`, 'Sales']}
+              formatter={(value: number) => [formatCurrency(value), 'Sales']}
             />
             <Area
               type="monotone"

@@ -10,8 +10,11 @@ import {
   TrendingUp,
   Users,
 } from 'lucide-react';
+import { usePOS } from '@/contexts/POSContext';
 
 const DashboardPage: React.FC = () => {
+  const { formatCurrency } = usePOS();
+
   return (
     <div className="h-full overflow-y-auto p-6">
       <div className="max-w-7xl mx-auto space-y-6">
@@ -25,7 +28,7 @@ const DashboardPage: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <StatCard
             title="Today's Sales"
-            value={`$${salesStats.todaySales.toLocaleString()}`}
+            value={formatCurrency(salesStats.todaySales)}
             trend={{ value: 12.5, isPositive: true }}
             icon={<DollarSign className="h-6 w-6" />}
             variant="accent"
@@ -38,14 +41,14 @@ const DashboardPage: React.FC = () => {
           />
           <StatCard
             title="Average Ticket"
-            value={`$${salesStats.averageTicket.toFixed(2)}`}
+            value={formatCurrency(salesStats.averageTicket)}
             trend={{ value: 3.2, isPositive: true }}
             icon={<TrendingUp className="h-6 w-6" />}
             variant="success"
           />
           <StatCard
             title="This Month"
-            value={`$${salesStats.monthSales.toLocaleString()}`}
+            value={formatCurrency(salesStats.monthSales)}
             trend={{ value: 8.1, isPositive: true }}
             icon={<Users className="h-6 w-6" />}
           />

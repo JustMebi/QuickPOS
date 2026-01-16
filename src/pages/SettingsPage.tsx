@@ -8,7 +8,6 @@ import {
   Store, 
   User, 
   Printer,
-  Globe,
   Shield,
   Save
 } from 'lucide-react';
@@ -20,10 +19,11 @@ import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
+import { usePOS } from '@/contexts/POSContext';
 
 const SettingsPage: React.FC = () => {
   const { toast } = useToast();
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const { settings, setSettings } = usePOS();
   const [notifications, setNotifications] = useState({
     lowStock: true,
     dailySummary: true,
@@ -36,11 +36,10 @@ const SettingsPage: React.FC = () => {
   });
 
   const handleThemeToggle = () => {
-    setIsDarkMode(!isDarkMode);
-    document.documentElement.classList.toggle('dark');
+    setSettings({ isDarkMode: !settings.isDarkMode });
     toast({
       title: "Theme Updated",
-      description: `Switched to ${!isDarkMode ? 'dark' : 'light'} mode`,
+      description: `Switched to ${!settings.isDarkMode ? 'dark' : 'light'} mode`,
     });
   };
 
@@ -96,7 +95,7 @@ const SettingsPage: React.FC = () => {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              {isDarkMode ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
+              {settings.isDarkMode ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
               Appearance
             </CardTitle>
             <CardDescription>Customize how the application looks</CardDescription>
@@ -107,7 +106,7 @@ const SettingsPage: React.FC = () => {
                 <Label>Dark Mode</Label>
                 <p className="text-sm text-muted-foreground">Switch between light and dark themes</p>
               </div>
-              <Switch checked={isDarkMode} onCheckedChange={handleThemeToggle} />
+              <Switch checked={settings.isDarkMode} onCheckedChange={handleThemeToggle} />
             </div>
             <Separator />
             <div className="flex items-center justify-between">
@@ -148,7 +147,7 @@ const SettingsPage: React.FC = () => {
                     type="password"
                     value={passwords.current}
                     onChange={(e) => setPasswords({ ...passwords, current: e.target.value })}
-                    placeholder="••••••••"
+                    placeholder="********"
                   />
                 </div>
                 <div className="space-y-2">
@@ -158,7 +157,7 @@ const SettingsPage: React.FC = () => {
                     type="password"
                     value={passwords.new}
                     onChange={(e) => setPasswords({ ...passwords, new: e.target.value })}
-                    placeholder="••••••••"
+                    placeholder="********"
                   />
                 </div>
                 <div className="space-y-2">
@@ -168,7 +167,7 @@ const SettingsPage: React.FC = () => {
                     type="password"
                     value={passwords.confirm}
                     onChange={(e) => setPasswords({ ...passwords, confirm: e.target.value })}
-                    placeholder="••••••••"
+                    placeholder="********"
                   />
                 </div>
               </div>
@@ -246,21 +245,37 @@ const SettingsPage: React.FC = () => {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="currency">Currency</Label>
-                <Select defaultValue="ngn">
+                <Select
+                  value={settings.currency}
+                  onValueChange={(value) =>
+                    setSettings({
+                      currency: value as 'ngn' | 'usd' | 'eur' | 'gbp',
+                    })
+                  }
+                >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="ngn">NGN (₦)</SelectItem>
+                    <SelectItem value="ngn">NGN (Naira)</SelectItem>
                     <SelectItem value="usd">USD ($)</SelectItem>
-                    <SelectItem value="eur">EUR (€)</SelectItem>
-                    <SelectItem value="gbp">GBP (£)</SelectItem>
+                    <SelectItem value="eur">EUR (Euro)</SelectItem>
+                    <SelectItem value="gbp">GBP (Pound)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="taxRate">Tax Rate (%)</Label>
-                <Input id="taxRate" type="number" defaultValue="7.5" />
+                <Input
+                  id="taxRate"
+                  type="number"
+                  value={settings.taxRate}
+                  onChange={(e) =>
+                    setSettings({
+                      taxRate: Number(e.target.value || 0),
+                    })
+                  }
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="receiptFooter">Receipt Footer Message</Label>
@@ -306,3 +321,8 @@ const SettingsPage: React.FC = () => {
 };
 
 export default SettingsPage;
+
+
+
+
+

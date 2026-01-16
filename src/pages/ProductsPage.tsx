@@ -22,6 +22,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { images } from '@/assets/images';
+import { usePOS } from '@/contexts/POSContext';
 
 const getCategoryImage = (product: Product) =>
   product.isService
@@ -35,6 +36,7 @@ const getCategoryImage = (product: Product) =>
 const ProductsPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const { formatCurrency } = usePOS();
 
   const filteredProducts = products.filter((product) => {
     const matchesCategory =
@@ -134,14 +136,14 @@ const ProductsPage: React.FC = () => {
                     </TableCell>
                     <TableCell className="capitalize">{product.category}</TableCell>
                     <TableCell className="text-right font-medium">
-                      ${product.price.toFixed(2)}
+                      {formatCurrency(product.price)}
                     </TableCell>
                     <TableCell className="text-right text-muted-foreground">
-                      {product.cost ? `$${product.cost.toFixed(2)}` : '??"'}
+                      {product.cost ? formatCurrency(product.cost) : 'N/A'}
                     </TableCell>
                     <TableCell className="text-right">
                       {product.isService ? (
-                        <span className="text-muted-foreground">?^z</span>
+                        <span className="text-muted-foreground">N/A</span>
                       ) : (
                         <span className={cn(product.stock <= 10 && 'text-warning font-medium')}>
                           {product.stock}
