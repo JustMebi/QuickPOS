@@ -41,7 +41,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
   onClose,
   total,
 }) => {
-  const { clearCart, cart, customer } = usePOS();
+  const { clearCart } = usePOS();
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod>('cash');
   const [amountTendered, setAmountTendered] = useState<string>('');
   const [isProcessing, setIsProcessing] = useState(false);
@@ -88,7 +88,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
   ].filter((v, i, a) => a.indexOf(v) === i && v >= total).slice(0, 4);
 
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
+    <Dialog open={open} onOpenChange={(isOpen) => { if (!isOpen) handleClose(); }}>
       <DialogContent className="max-w-lg p-0 gap-0 overflow-hidden">
         {!isComplete ? (
           <>
@@ -209,3 +209,4 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
     </Dialog>
   );
 };
+

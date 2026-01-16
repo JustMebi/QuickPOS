@@ -189,3 +189,4 @@ const CartItemRow: React.FC<CartItemRowProps> = ({
     </div>
   );
 };
+
